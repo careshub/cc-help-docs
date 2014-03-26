@@ -197,18 +197,16 @@ function register_taxonomy_cchelp_targeted_roles() {
 // add_action( 'init', 'cchelp_add_initial_groups' );
 // function cchelp_add_initial_groups()
 // {	
-	// if ( bp_has_groups() ) :
-			// while ( bp_groups() ) : bp_the_group(); 			
-				// $group = new BP_Groups_Hierarchy(bp_get_group_id());
-				// $parentid = $group->parent_id;
-				// if ($parentid == 0) {
-					// wp_insert_term( bp_get_group_name(), cc_help_groups, array('slug' => 'ccgroup-association-' . bp_get_group_id()) );	
-				// }			
-			// endwhile; 
-		    // do_action( 'bp_after_groups_loop' );
-	// else :
-		// echo "There are no groups available.";
-    // endif;  
+    // if ( bp_has_groups( 'per_page=1000' ) ) :
+    //         while ( bp_groups() ) : bp_the_group();             
+    //             $group = new BP_Groups_Hierarchy( bp_get_group_id() );
+    //             if ( (int) $group->vars['parent_id'] == 0 ) {
+    //                 wp_insert_term( bp_get_group_name(), 'cc_help_groups', array('slug' => 'ccgroup-association-' . bp_get_group_id()) );
+    //             }        
+    //         endwhile; 
+    // else :
+    //     echo "There are no groups available.";
+    // endif;
 // }
 
 
