@@ -113,15 +113,6 @@ function register_taxonomy_cc_help_groups() {
 
     register_taxonomy( 'cc_help_groups', array('cchelp'), $args );	
 	
-	?>
-	
-	<style type="text/css">
-		#cc_help_groups-add-toggle {
-			display:none;		
-		}		
-	</style>
-	
-	<?php
 }
 
 add_action( 'init', 'register_taxonomy_cchelp_personas' );
