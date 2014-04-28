@@ -77,6 +77,44 @@ function register_taxonomy_cc_help_types() {
     register_taxonomy( 'cc_help_types', array('cchelp'), $args );
 }
 
+add_action( 'init', 'register_taxonomy_cc_help_topics' );
+
+function register_taxonomy_cc_help_topics() {
+
+    $labels = array( 
+        'name' => _x( 'Topics', 'cc_help_topics' ),
+        'singular_name' => _x( 'Topic', 'cc_help_topics' ),
+        'search_items' => _x( 'Search Topics', 'cc_help_topics' ),
+        'popular_items' => _x( 'Popular Topics', 'cc_help_topics' ),
+        'all_items' => _x( 'All Topics', 'cc_help_topics' ),
+        'parent_item' => _x( 'Parent Topic', 'cc_help_topics' ),
+        'parent_item_colon' => _x( 'Parent Topic:', 'cc_help_topics' ),
+        'edit_item' => _x( 'Edit Topic', 'cc_help_topics' ),
+        'update_item' => _x( 'Update Topic', 'cc_help_topics' ),
+        'add_new_item' => _x( 'Add New Topic', 'cc_help_topics' ),
+        'new_item_name' => _x( 'New Topic', 'cc_help_topics' ),
+        'separate_items_with_commas' => _x( 'Separate topics with commas', 'cc_help_topics' ),
+        'add_or_remove_items' => _x( 'Add or remove topics', 'cc_help_topics' ),
+        'choose_from_most_used' => _x( 'Choose from the most used topics', 'cc_help_topics' ),
+        'menu_name' => _x( 'Topics', 'cc_help_topics' ),
+    );
+
+    $args = array( 
+        'labels' => $labels,
+        'public' => true,
+        'show_in_nav_menus' => true,
+        'show_ui' => true,
+        'show_tagcloud' => true,
+        'show_admin_column' => false,
+        'hierarchical' => true,
+
+        'rewrite' => true,
+        'query_var' => true
+    );
+
+    register_taxonomy( 'cc_help_topics', array('cchelp'), $args );
+}
+
 add_action( 'init', 'register_taxonomy_cc_help_groups' );
 
 function register_taxonomy_cc_help_groups() {
@@ -263,5 +301,82 @@ function cchelp_get_group_tax_slug( $groupid ) {
     return 'ccgroup-association-' . $groupid;
 }
 
+//Building the input form in the WordPress admin area
+add_action( 'admin_init', 'cc_help_meta_box_add' );
+function cc_help_meta_box_add()
+{
+	 add_meta_box( 'cc_help_meta_box', 'Highlight', 'cc_help_meta_box', 'cchelp', 'normal', 'high');         
+}
+       
+function cc_help_meta_box()
+{
+    global $post;
+    $custom = get_post_custom($post->ID);
+    $cchelp_sticky = $custom["cchelp_sticky"][0];	
+	?>
+	<input type="checkbox" id="cchelp_sticky" name="cchelp_sticky" value="sticky" <?php checked( $cchelp_sticky, 'sticky' ); ?>> Highlight on help page?
+	
+	<?php
+}
+
+add_action( 'save_post', 'cchelp_save' );
+function cchelp_save() { 
+ 
+   global $post;
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+      return;
+
+    if ($post->post_type == 'cchelp') {
+       cchelp_save_event_field("cchelp_sticky");
+    }
+}
+
+function cchelp_save_event_field($event_field) {
+    global $post;
+    //Don't save empty metas
+    if(!empty($_POST[$event_field])) {
+        update_post_meta($post->ID, $event_field, $_POST[$event_field]);
+    } else {
+        //Also note that disabled fields are not saved. e.g. if "National" is selected, state, finalgeo and lat/lon will all be deleted. If "State" is selected, finalgeo and lat/lon will all be deleted.
+        delete_post_meta($post->ID, $event_field);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+// function cchelp_getuser_group_ids($query) {
+	// if ( !is_admin() && $query->is_main_query() ) {
+		// $gids = groups_get_user_groups( bp_loggedin_user_id() );
+		
+		// $gidarr = array_map( 'cchelp_get_group_tax_slug', $gids['groups'] );
+		
+		// $query->set('post_type', 'cchelp');
+		// $taxquery = array(
+					// 'relation' => 'OR',
+						// array(
+						// 'taxonomy' => 'cc_help_groups',
+						// 'field' => 'slug',
+						// 'terms' => $gidarr					
+						// ), 
+						// array(
+						// 'taxonomy' => 'cc_help_groups',
+						// 'field' => 'slug',
+						// 'terms' => 'all'
+						// ),
+					// );
+		// $query->set( 'tax_query', $taxquery );
+
+
+	// }
+// }
+// add_action('pre_get_posts','cchelp_getuser_group_ids');
 
 
