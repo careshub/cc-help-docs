@@ -278,14 +278,19 @@ function register_taxonomy_cchelp_targeted_roles() {
 
 
 //This function adds a group taxonomy at time of group creation if top-level group
-function cchelp_add_group_taxonomy($groupid) {
-	$group = groups_get_group( array( 'group_id' => $groupid) );
-	$groupname = $group->name;
-	$hierarchy_group = new BP_Groups_Hierarchy($groupid);
-	$parentid = $hierarchy_group->parent_id;
-	if ($parentid == 0) {
-		wp_insert_term( $groupname, 'cc_help_groups', array( 'slug' => cchelp_get_group_tax_slug( $groupid ) ) );
-	}
+function cchelp_add_group_taxonomy( $groupid ) {
+    $group = groups_get_group( array( 'group_id' => $groupid ) );
+    $groupname = $group->name;
+
+    if ( class_exists( 'BP_Groups_Hierarchy' ) ) {
+        $hierarchy_group = new BP_Groups_Hierarchy( $groupid );
+        if ( $hierarchy_group->parent_id == 0 ) {
+            wp_insert_term( $groupname, 'cc_help_groups', array( 'slug' => cchelp_get_group_tax_slug( $groupid ) ) );
+        }
+    } else {
+        // If no hierarchy, all are top level
+        wp_insert_term( $groupname, 'cc_help_groups', array( 'slug' => cchelp_get_group_tax_slug( $groupid ) ) );
+    }
 }
 add_action( 'groups_group_create_complete', 'cchelp_add_group_taxonomy' );
 
