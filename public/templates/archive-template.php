@@ -9,7 +9,6 @@ get_header();
 // Exclusions- who should (not) see certain content.
 // We're doing the exclusionary taxonomy term work on the _pre_get_posts filter for all loops on this page.
 // 'cc_help_groups' -- if the content is aimed at a particular group
-// 'cchelp_personas' -- content for types of users. Only applies to COGIS
 // 'cchelp_targeted_roles' -- content aimed at group admins and mods.
 
 // Content formats - which loop to put these things in.

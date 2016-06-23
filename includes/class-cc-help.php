@@ -162,7 +162,6 @@ class CC_Help {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cc-help-cpt-tax.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cc-help-cpt.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cc-help-tax-groups.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cc-help-tax-personas.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cc-help-tax-targeted-roles.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cc-help-tax-topics.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cc-help-tax-types.php';
@@ -236,7 +235,6 @@ class CC_Help {
 
 		// Create the many taxonomies.
 		$class_tax_groups = new CC_Help_Tax_Groups();
-		$class_tax_personas = new CC_Help_Tax_Personas();
 		$class_tax_targeted_roles = new CC_Help_Tax_Targeted_Roles();
 		$class_tax_topics = new CC_Help_Tax_Topics();
 		$class_tax_types = new CC_Help_Tax_Types();

@@ -63,7 +63,7 @@ class CC_Help_CPT extends CC_Help_CPT_Tax {
 	        'hierarchical' => false,
 	        'description' => 'Support documents',
 	        // 'supports' => array( 'title', 'editor', 'comments', 'revisions', 'thumbnail' ),
-	        'taxonomies' => array( 'cc_help_types', 'cc_help_topics', 'cc_help_groups', 'cchelp_personas', 'cchelp_targeted_roles' ),
+	        'taxonomies' => array( 'cc_help_types', 'cc_help_topics', 'cc_help_groups', 'cchelp_targeted_roles' ),
 	        'public' => false,
 	        'show_ui' => true,
 	        'show_in_menu' => true,
