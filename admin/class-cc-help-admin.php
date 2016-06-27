@@ -57,6 +57,11 @@ class CC_Help_Admin {
 
 		$this->version = cc_help_get_version();
 
+		add_filter( "manage_edit-{$this->post_type_name}_columns", array( $this, 'edit_admin_columns') );
+		add_filter( "manage_{$this->post_type_name}_posts_custom_column", array( $this, 'manage_admin_columns'), 18, 2 );
+		add_filter( "manage_edit-{$this->post_type_name}_sortable_columns", array( $this, 'register_sortable_columns' ) );
+		add_action( 'pre_get_posts', array( $this, 'sortable_columns_orderby' ) );
+
 	}
 
 	/**
@@ -139,10 +144,92 @@ class CC_Help_Admin {
 		$metas = array( 'cchelp_sticky' );
 		foreach ( $metas as $meta ) {
 			if ( ! empty( $_POST[$meta] ) ) {
-				update_post_meta($post->ID, $meta, $_POST[$meta] );
+				update_post_meta($post->ID, $meta, sanitize_text_field( $_POST[$meta] ) );
 			} else {
 				delete_post_meta( $post->ID, $meta );
 			}
+		}
+	}
+
+	/**
+	 * Change behavior of the Help Docs overview table by adding custom columns.
+	 * - Handle output for "Highlighted" column.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @return   array of columns to display
+	 */
+	public function edit_admin_columns( $columns ) {
+		// Last column is Date.
+		// We want to insert our new columns just before that.
+		$entries = count( $columns );
+		$opening_set = array_slice( $columns, 0, $entries - 1 );
+		$closing_set = array_slice( $columns, - 1 );
+
+		$insert_set = array(
+			'cchelp_sticky' => __( 'Highlighted' ),
+			);
+
+		$columns = array_merge( $opening_set, $insert_set, $closing_set );
+
+		return $columns;
+	}
+
+	/**
+	 * Change behavior of the Help Docs overview table by adding custom columns.
+	 * - Handle output for "Highlighted" column.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @return   string content of custom columns
+	 */
+	public function manage_admin_columns( $column, $post_id ) {
+		if ( $column == 'cchelp_sticky' ) {
+			$sticky = get_post_meta( $post_id, 'cchelp_sticky', true );
+			echo $sticky ? 'Yes' : '';
+		}
+	}
+
+	/**
+	 * Change behavior of the Help Docs overview table by adding custom columns.
+	 * - Add sortability to "Highlighted" column.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @return   array of columns to display
+	 */
+	public function register_sortable_columns( $columns ) {
+		$columns['cchelp_sticky'] = 'cchelp_sticky';
+		return $columns;
+	}
+	/**
+	 * Change behavior of the Help Docs overview table by adding custom columns.
+	 * - Define sorting query for "Highlighted" column.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @return   alters $query variable by reference
+	 */
+	function sortable_columns_orderby( $query ) {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		$orderby = $query->get( 'orderby');
+		if ( 'cchelp_sticky' == $orderby ) {
+			$meta_query = array(
+			    'relation' => 'OR',
+			    array(
+			        'key'=>'cchelp_sticky',
+			        'compare' => 'EXISTS'
+			    ),
+			    array(
+			        'key'=>'cchelp_sticky',
+			        'compare' => 'NOT EXISTS'
+			    )
+			);
+			$query->set( 'meta_query', $meta_query );
+			$query->set( 'orderby', 'meta_value' );
 		}
 	}
 }
