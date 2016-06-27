@@ -214,10 +214,6 @@ class CC_Help_Public {
 				$wp_query_obj->set( 'tax_query', array_merge( $tax_query, $cchelp_tax_queries ) );
 			}
 
-			$towrite = PHP_EOL . 'filter_archive_query, filtered query: ' . print_r( $wp_query_obj, TRUE );
-			$fp = fopen('cchelp-troubleshooting.txt', 'a');
-			fwrite($fp, $towrite);
-			fclose($fp);
 		}
 	}
 

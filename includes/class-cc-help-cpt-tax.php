@@ -366,6 +366,15 @@ class CC_Help_CPT_Tax {
 		}
 	}
 
+	/**
+	 * Sanitize hex color input.
+	 *
+	 * Taken from WP's customizer santization functions, which are apparently only available in the customizer.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  string  $color
+	 */
 	public function sanitize_hex_color( $color ) {
 		if ( '' === $color )
 			return '';

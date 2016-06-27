@@ -167,7 +167,7 @@ class CC_Help {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cc-help-tax-types.php';
 
 		/**
-		 * The class responsible for defining all actions that occur in the Dashboard.
+		 * The class responsible for defining all actions that occur in the public side.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cc-help-public.php';
 
@@ -242,38 +242,36 @@ class CC_Help {
 
 		$plugin_public = new CC_Help_Public();
 		// Handle templates for this post type.
-		add_filter( 'archive_template', array( $plugin_public, 'filter_archive_template' ) );
+		// @TODO: Enable this when making live.
+		// add_filter( 'archive_template', array( $plugin_public, 'filter_archive_template' ) );
+		// @TODO: Not using the single template yet. The site single template seems OK.
 		// add_filter( 'single_template', array( $plugin_public, 'filter_single_template' ) );
 
 		// We may want to apply some GET params to the query on the DVT archive.
-		add_action( 'pre_get_posts', array( $plugin_public, 'filter_archive_query' ) );
+		// @TODO: Enable this when making live.
+		// add_action( 'pre_get_posts', array( $plugin_public, 'filter_archive_query' ) );
 
 		// Cleanup GET params upon submission.
-		add_action( 'template_redirect', array( $plugin_public, 'reformat_get_string' ), 11 );
+		// @TODO: Enable this when making live.
+		// add_action( 'template_redirect', array( $plugin_public, 'reformat_get_string' ), 11 );
 
 		// We want this archive to be full-width.
 		add_filter( 'body_class', array( $plugin_public, 'filter_body_class' ), 78 );
 
 		// Change the REST API response so that it includes important meta for data vis tools.
-		add_action( 'rest_api_init', array( $plugin_public, 'rest_read_meta' ) );
+		// @TODO: Do this REST stuff if we end up making this page update via AJAX.
+		// add_action( 'rest_api_init', array( $plugin_public, 'rest_read_meta' ) );
 
 		/*
 		 * Add the contact modal to the footer of every page.
 		 * If you want to trigger the contact modal, give your anchor a class of "open-contact-modal"
 		 */
+		// @TODO: Not using the modal currently. Not a fan because of bad mobile behavior.
 		// add_action( 'wp_footer', 'cchelp_output_contact_modal' );
 
-		add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_styles') );
-
-
-		// Change what's shown on the archive page.
-		add_filter( 'pre_get_posts', array( $plugin_public, 'filter_archive_query' ) );
-
-		// // add our callback to both ajax actions.
-		// add_action( "wp_ajax_ccgp_get_page_details", array( $plugin_public, "ccgp_ajax_retrieve_page_details" ) );
-		// add_action( "wp_ajax_nopriv_ccgp_get_page_details", array( $plugin_public, "ccgp_ajax_retrieve_page_details" ) );
-		// add_action( "wp_ajax_ccgp_get_page_order", array( $plugin_public, "ccgp_ajax_retrieve_page_order" ) );
-		// add_action( "wp_ajax_nopriv_ccgp_get_page_order", array( $plugin_public, "ccgp_ajax_retrieve_page_order" ) );
+		// Enqueue archive specific CSS styles.
+		// @TODO: Enable this when making live.
+		// add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_styles') );
 	}
 
 	/**
@@ -366,141 +364,6 @@ class CC_Help {
 	public function create_taxonomy_slug( $group_id = false ) {
 		$group_id = ( $group_id ) ?  $group_id : bp_get_current_group_id();
 		return 'ccgp_related_group_' . $group_id;
-	}
-
-	/**
-	 * Get the appropriate query for various screens
-	 *
-	 * @return array of args for WP_Query
-	 */
-	public function get_query( $group_id = null, $status = null ) {
-
-	  	// For single post, get the post by the slug
-		if( $this->is_single_post() ){
-			$query = array(
-				'name' => bp_action_variable( 0 ),
-				'post_type' => 'cc_group_page',
-				// 'post_status' => array( 'publish', 'draft'),
-			);
-		} else {
-			$group_id = $group_id ? $group_id : bp_get_current_group_id();
-			// Not a single post, this is the list of narratives for a group.
-			// TODO: Finish pagination
-			$paged = ( get_query_var('paged') ) ? get_query_var('paged') : 1;
-			// $query= "related_groups=".$cats_list;
-			$query = array(
-				'post_type' => 'cc_group_page',
-				'tax_query' => array(
-					array(
-						'taxonomy' => 'ccgp_related_groups',
-						'field' => 'id',
-						'terms' => $this->get_group_term_id( $group_id ),
-						'include_children' => false,
-						// 'operator' => 'IN'
-					)
-				),
-				'orderby' => array( 'post_title' => 'ASC' ),
-			);
-
-			// If the status is specified, respect it, otherwise use the user's abilities to determine.
-			if ( $status == 'draft' ) {
-				$query['post_status'] = array( 'publish', 'draft');
-			} else if ( $status == 'publish' ) {
-				$query['post_status'] = array( 'publish' );
-			} else {
-				// Get draft posts for those who can edit, otherwise only show published stories
-				$query['post_status'] = $this->current_user_can_post() ? array( 'publish', 'draft') : array( 'publish' );
-			}
-		}
-
-		return apply_filters( "ccgp_get_query", $query );
-	}
-
-	/**
-	 * Build a query to find the pages for a specific tab.
-	 *
-	 * @return array of args for WP_Query
-	 */
-	public function get_pages_query_for_tab( $group_id = null, $status = null ) {
-		$pages_to_fetch = array();
-		if ( empty( $group_id ) ) {
-			$group_id = bp_get_current_group_id();
-		}
-		$current_action = bp_current_action();
-		// Basic query for posts related to the group.
-		$query = array(
-			'post_type' => 'cc_group_page',
-			'tax_query' => array(
-				array(
-					'taxonomy' => 'ccgp_related_groups',
-					'field' => 'id',
-					'terms' => $this->get_group_term_id( $group_id ),
-					'include_children' => false,
-					// 'operator' => 'IN'
-				)
-			),
-		);
-
-		// Two cases.
-		// 1. The main tab just lists everything and is only visible to group admins and mods.
-			// Don't set post__in, get all related posts
-			// TODO: Id the user is a mod, then exclude admin only posts.
-		// 2. One of the custom tabs which should show only what's specified.
-			// Set post__in to get the right posts.
-		if ( $current_action != $this->get_manage_pages_slug() ) {
-			// This is case #2.
-			$tab_details = ccgp_get_single_tab_details( $group_id, $current_action );
-			$pages_in_tab = array();
-			if ( ! empty( $tab_details['pages'] ) ) {
-				$pages_in_tab = $tab_details['pages'];
-			}
-			// Which of these pages can the visitor see?
-			// @TODO: Maybe move this into a post meta query?
-			$user_access = array( 'anyone' );
-			if ( $user_id = get_current_user_id() ) {
-				// User is logged in
-				$user_access[] = 'loggedin';
-				if ( groups_is_user_admin( $user_id, $group_id ) || current_user_can( 'list_users' ) ) {
-					// Group or site admins can see everything
-					array_push( $user_access, 'member', 'mod', 'admin' );
-				} elseif ( groups_is_user_mod( $user_id, $group_id ) ) {
-					array_push( $user_access, 'member', 'mod' );
-				} elseif ( groups_is_user_member( $user_id, $group_id ) ) {
-					$user_access[] = 'member';
-				}
-			}
-			foreach ( $pages_in_tab as $key => $page_details) {
-				if ( in_array( $page_details['visibility'], $user_access ) ){
-					$pages_to_fetch[] = $page_details['post_id'];
-				}
-			}
-
-			// Passing an empty array in post__in returns all the posts. So if we want none, we have to pass an array with 0 as the only element.
-			// See: https://core.trac.wordpress.org/ticket/28099
-			if ( ! empty( $pages_to_fetch ) ) {
-				$query['post__in'] = $pages_to_fetch;
-			} else {
-				$query['post__in'] = array( 0 );
-			}
-			$query['orderby'] = 'post__in';
-		}
-
-		// If the status is specified, respect it, otherwise use the user's abilities to determine.
-		if ( $status == 'draft' ) {
-			$query['post_status'] = array( 'publish', 'draft');
-		} else if ( $status == 'publish' ) {
-			$query['post_status'] = array( 'publish' );
-		} else {
-			// Get draft posts for those who can edit, otherwise only show published stories
-			$query['post_status'] = $this->current_user_can_post() ? array( 'publish', 'draft') : array( 'publish' );
-		}
-
-        // $towrite = PHP_EOL . 'query: ' . print_r( $query, TRUE );
-        // $fp = fopen('ccgp-pages-in-tab-query.txt', 'a');
-        // fwrite($fp, $towrite);
-        // fclose($fp);
-
-		return apply_filters( "get_pages_query_for_tab", $query );
 	}
 
 	/** TEMPLATE LOADER ************************************************/

@@ -65,10 +65,6 @@ function cchelp_get_archive_topic_param() {
 			}
 		}
 	}
-    $towrite = PHP_EOL . 'cchelp_get_archive_topic_param: ' . print_r( $terms_to_include, TRUE );
-    $fp = fopen('cchelp-troubleshooting.txt', 'a');
-    fwrite($fp, $towrite);
-    fclose($fp);
 	return $terms_to_include;
 }
 
