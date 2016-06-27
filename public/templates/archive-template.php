@@ -14,8 +14,6 @@ get_header();
 // Content formats - which loop to put these things in.
 // 'cc_help_types' -- like video or FAQ
 
-// @TODO: Maybe use "highlight on help page" to populate default view?
-
 //Which term is this page showing?
 if ( isset( $wp_query->query_vars['term'] ) ) {
 	$tax_term = get_term_by( 'slug', $wp_query->query_vars['term'], $wp_query->query_vars['taxonomy'] );
@@ -42,7 +40,7 @@ $types_tax_name = cchelp_get_types_tax_name();
 	<section id="primary" class="site-content">
 		<div id="content" role="main">
 			<header class="entry-header">
-				<h1 class="entry-title"><a href="<?php get_post_type_archive_link( cchelp_get_cpt_name() ); ?>"><?php the_archive_title(); ?></a></h1>
+				<h1 class="entry-title"><a href="<?php get_post_type_archive_link( cchelp_get_cpt_name() ); ?>">Support</a></h1>
 				<p>We&rsquo;re glad you&rsquo;re here to use the latest technology and tools to make lasting community change. We&rsquo;d like to offer some support.</p>
 			</header>
 
@@ -55,9 +53,9 @@ $types_tax_name = cchelp_get_types_tax_name();
 			if ( have_posts() ) :
 				if ( $selected_topics ) :
 				?>
-				<h2>Help Articles in the <?php echo $selected_topics_statement; ?> Topic</h2>
+					<h2>Help Articles in the <?php echo $selected_topics_statement; ?> Topic</h2>
 				<?php else : ?>
-				<h2>Highlighted Help Articles</h2>
+					<h2>Highlighted Help Articles</h2>
 				<?php endif; ?>
 				<section id="help-found-videos">
 					<h3 class="screamer section-header">Videos</h3>
@@ -194,55 +192,3 @@ $types_tax_name = cchelp_get_types_tax_name();
 	</script>
 <?php
 get_footer();
-
-function cchelp_search() {
-?>
-			<div>
-				<br /><br />
-				<h3>Search Support</h3>
-
-				<form action="#searchresults" method="post" name="cchelpsearch">
-								<input id="s" class="text" type="text" name="s" value="" />
-								<input type="hidden" name="post_type" value="cchelp" /> <!-- // hidden 'your_custom_post_type' value -->
-								<input class="submit button" type="submit" name="submit" value="Search" />
-				</form>
-			</div>
-			<div id="searchresults">
-			<?php
-			if (isset($_POST['cchelpterms'])) {
-				if ( have_posts() ) :
-					/* Start the Loop */
-					while ( have_posts() ) : the_post();
-						get_template_part( 'content', get_post_format() );
-					endwhile;
-				 else :
-					get_template_part( 'content', 'none' );
-				 endif;
-			}
-			?>
-			</div>
-			<?php
-}
-
-function cchelp_footer_buttons() {
-?>
-		<br />
-		<div id="search_box">
-		<?php
-			cchelp_search();
-		?>
-		</div>
-		<br />
-			<div style="width:895px;">
-				<!--<div id="guideTraining" class="guidebook2" title="Training">
-					<span class="guidebook2-text">View a recorded training webinar, sign up for our next one<br />-OR-<br />Contact us for customized training solutions</span>
-				</div>-->
-				<a href="https://ip3.zendesk.com/account/dropboxes/20111391" target="_blank"><div id="guideContact" class="guidebook2" style="height:40px;" title="Contact Us">
-					<span class="guidebook2-text" style="top:10px;"><strong>Still stuck? Contact us here</strong></span>
-				</div></a>
-				<!--<div id="guideInspiration" class="guidebook2" title="Inspiration">
-					<span class="guidebook2-text">Need some inspiration?<br />How to use the Commons to create real change in your community</span>
-				</div>-->
-			</div>
-<?php
-}
