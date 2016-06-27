@@ -77,7 +77,7 @@ class CC_Help_Tax_Groups extends CC_Help_CPT_Tax {
 			'show_in_nav_menus' => true,
 			'show_ui' => true,
 			'show_tagcloud' => true,
-			'show_admin_column' => false,
+			'show_admin_column' => true,
 			'hierarchical' => true,
 			'rewrite' => true,
 			'query_var' => true

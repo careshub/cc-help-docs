@@ -33,6 +33,9 @@ class CC_Help_Tax_Types extends CC_Help_CPT_Tax {
 
 		add_action( 'init', array( $this, 'register_taxonomy' ), 11 );
 
+		// Add a filter dropdown to the help docs list table.
+		add_action( 'restrict_manage_posts', array( $this, 'add_taxonomy_filter' ) );
+
 		// Call the parent and pass the file
 		// parent::__construct( $file );
 	}
@@ -69,7 +72,7 @@ class CC_Help_Tax_Types extends CC_Help_CPT_Tax {
 			'show_in_nav_menus' => true,
 			'show_ui' => true,
 			'show_tagcloud' => true,
-			'show_admin_column' => false,
+			'show_admin_column' => true,
 			'hierarchical' => true,
 
 			'rewrite' => true,
@@ -77,5 +80,30 @@ class CC_Help_Tax_Types extends CC_Help_CPT_Tax {
 		);
 
 		register_taxonomy( $this->tax_name, array( $this->cpt_name ), $args );
+	}
+
+	/**
+	 * Add a filter dropdown to the help docs list table.
+	 *
+	 * @since    1.0.0
+	 */
+	public function add_taxonomy_filter() {
+		global $typenow;
+
+		// Only show this filter on the cchelp post type.
+		if ( $this->cpt_name == $typenow ) {
+
+				$tax_obj = get_taxonomy( $this->tax_name );
+				$tax_label = $tax_obj->labels->name;
+				$terms = get_terms( $this->tax_name );
+				if( $terms ) {
+					echo "<select name='$this->tax_name' id='$this->tax_name' class='postform'>";
+					echo "<option value=''>All $tax_label</option>";
+					foreach ($terms as $term) {
+						echo '<option value='. $term->slug, $_GET[$tax_slug] == $term->slug ? ' selected="selected"' : '','>' . $term->name .' (' . $term->count .')</option>';
+					}
+					echo "</select>";
+			}
+		}
 	}
 }
