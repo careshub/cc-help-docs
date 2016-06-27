@@ -63,6 +63,9 @@ class CC_Help_Tax_Topics extends CC_Help_CPT_Tax {
 		add_action( "{$this->tax_name}_add_form_fields",  array( $this, 'add_form_field'  ) );
 		add_action( "{$this->tax_name}_edit_form_fields", array( $this, 'edit_form_field' ) );
 
+		// Sanitize the meta input before it is inserted to the db.
+		add_filter( 'sanitize_term_meta_color', array( $this, 'sanitize_hex_color' ) );
+
 		// Call the parent.
 		parent::__construct();
 	}

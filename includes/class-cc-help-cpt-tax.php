@@ -328,7 +328,12 @@ class CC_Help_CPT_Tax {
 			// Get the term being posted
 			$term_key = 'term-' . $meta_key;
 
-			// Bail if not updating meta_key
+			// Bail if the meta_value hasn't been POSTed.
+			if ( ! isset( $_POST[ $term_key ] ) ) {
+				return;
+			}
+
+			// Parse the meta value.
 			$meta = ! empty( $_POST[ $term_key ] )
 				? $_POST[ $term_key ]
 				: '';
@@ -355,7 +360,21 @@ class CC_Help_CPT_Tax {
 
 		// Update meta_key value
 		} else {
+			// Make sure to add the proper sanitization callback.
+			// See CC_Help_Tax_Topics::_construct for example.
 			update_term_meta( $term_id, $meta_key, $meta );
+		}
+	}
+
+	public function sanitize_hex_color( $color ) {
+		if ( '' === $color )
+			return '';
+
+		// 3 or 6 hex digits, or the empty string.
+		if ( preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $color ) ) {
+			return $color;
+		} else {
+			return '';
 		}
 	}
 }
