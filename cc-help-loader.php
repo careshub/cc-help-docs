@@ -28,7 +28,8 @@ if ( ! defined( 'WPINC' ) ) {
  */
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-cc-help.php' );
 
-add_action( 'init', array( 'CC_Help', 'get_instance' ) );
+// Start it up.
+CC_Help::get_instance();
 
 // Define a constant that we can use to construct file paths throughout the component
 function cc_help_base_path() {
