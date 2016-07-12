@@ -19,14 +19,14 @@
  * @return string html for the section.
  */
 function cchelp_output_guidebook_grid( $selected_topics = array() ) {
-	// @TODO: Make the guidebooks smaller, but keep them on the page, if one is selected. Maybe sort the selected to the front?
+
 	$tax_name = cchelp_get_topic_tax_name();
-	$topics = get_terms( array(
+	$topics = get_terms( $tax_name, array(
 	    'taxonomy' => $tax_name,
 	    'hide_empty' => false
 	) );
 
-	if ( empty( $topics ) ) {
+	if ( empty( $topics ) || is_wp_error( $topics ) ) {
 		return; // There's nothing to do.
 	}
 

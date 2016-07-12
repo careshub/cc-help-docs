@@ -74,7 +74,7 @@ class CC_Help_CPT extends CC_Help_CPT_Tax {
 	        // 'exclude_from_search' => true,
 	        'has_archive' => true,
 	        // Enable this and flush permalinks to change the archive slug
-   	        // 'rewrite' => array( 'slug' => 'supportal' ),
+   	        // 'rewrite' => array( 'slug' => 'support' ),
    	        'rewrite' => true,
 	        'query_var' => true,
 	        'can_export' => true,

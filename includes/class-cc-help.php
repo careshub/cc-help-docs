@@ -147,10 +147,7 @@ class CC_Help {
 	 * @access   private
 	 */
 	private function load_dependencies() {
-        // $towrite = PHP_EOL . 'about to load dependencies!'; // . print_r( $this->plugin_name, TRUE );
-        // $fp = fopen('cc-help.txt', 'a');
-        // fwrite($fp, $towrite);
-        // fclose($fp);
+
 		/**
 		 * Globally accessible functions.
 		 */
@@ -243,17 +240,17 @@ class CC_Help {
 		$plugin_public = new CC_Help_Public();
 		// Handle templates for this post type.
 		// @TODO: Enable this when making live.
-		// add_filter( 'archive_template', array( $plugin_public, 'filter_archive_template' ) );
+		add_filter( 'archive_template', array( $plugin_public, 'filter_archive_template' ) );
 		// @TODO: Not using the single template yet. The site single template seems OK.
-		// add_filter( 'single_template', array( $plugin_public, 'filter_single_template' ) );
+		add_filter( 'single_template', array( $plugin_public, 'filter_single_template' ) );
 
 		// We may want to apply some GET params to the query on the DVT archive.
 		// @TODO: Enable this when making live.
-		// add_action( 'pre_get_posts', array( $plugin_public, 'filter_archive_query' ) );
+		add_action( 'pre_get_posts', array( $plugin_public, 'filter_archive_query' ) );
 
 		// Cleanup GET params upon submission.
 		// @TODO: Enable this when making live.
-		// add_action( 'template_redirect', array( $plugin_public, 'reformat_get_string' ), 11 );
+		add_action( 'template_redirect', array( $plugin_public, 'reformat_get_string' ), 11 );
 
 		// We want this archive to be full-width.
 		add_filter( 'body_class', array( $plugin_public, 'filter_body_class' ), 78 );
@@ -271,7 +268,7 @@ class CC_Help {
 
 		// Enqueue archive specific CSS styles.
 		// @TODO: Enable this when making live.
-		// add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_styles') );
+		add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_styles') );
 	}
 
 	/**

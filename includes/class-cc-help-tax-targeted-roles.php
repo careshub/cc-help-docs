@@ -30,7 +30,7 @@ class CC_Help_Tax_Targeted_Roles extends CC_Help_CPT_Tax {
 	public function __construct() {
 		$this->tax_name = cchelp_get_targeted_roles_tax_name();
 
-		add_action( 'init', array( $this, 'register_taxonomy' ), 11 );
+		add_action( 'init', array( $this, 'register_taxonomy' ), 12 );
 
 		// Call the parent and pass the file
 		// parent::__construct( $file );

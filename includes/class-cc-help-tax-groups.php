@@ -31,7 +31,7 @@ class CC_Help_Tax_Groups extends CC_Help_CPT_Tax {
 
 		$this->tax_name = cchelp_get_groups_tax_name();
 
-		add_action( 'init', array( $this, 'register_taxonomy' ), 11 );
+		add_action( 'init', array( $this, 'register_taxonomy' ), 12 );
 
 		// Add group taxonomy term when a group is created.
 		add_action( 'groups_group_create_complete', array( $this, 'add_term' ) );

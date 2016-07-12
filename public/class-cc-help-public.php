@@ -214,6 +214,9 @@ class CC_Help_Public {
 				$wp_query_obj->set( 'tax_query', array_merge( $tax_query, $cchelp_tax_queries ) );
 			}
 
+			// Show everything... is this a good idea?
+			$wp_query_obj->set( 'posts_per_page', -1 );
+
 		}
 	}
 

@@ -31,7 +31,7 @@ class CC_Help_Tax_Types extends CC_Help_CPT_Tax {
 
 		$this->tax_name = cchelp_get_types_tax_name();
 
-		add_action( 'init', array( $this, 'register_taxonomy' ), 11 );
+		add_action( 'init', array( $this, 'register_taxonomy' ), 12 );
 
 		// Add a filter dropdown to the help docs list table.
 		add_action( 'restrict_manage_posts', array( $this, 'add_taxonomy_filter' ) );

@@ -46,7 +46,7 @@ class CC_Help_Tax_Topics extends CC_Help_CPT_Tax {
 	public function __construct() {
 		$this->tax_name = cchelp_get_topic_tax_name();
 
-		add_action( 'init', array( $this, 'register_taxonomy' ), 11 );
+		add_action( 'init', array( $this, 'register_taxonomy' ), 12 );
 
 		// Add the styles and scripts for the color picker.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_colorpicker_scripts' ) );
