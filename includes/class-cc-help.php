@@ -242,7 +242,7 @@ class CC_Help {
 		// @TODO: Enable this when making live.
 		add_filter( 'archive_template', array( $plugin_public, 'filter_archive_template' ) );
 		// @TODO: Not using the single template yet. The site single template seems OK.
-		add_filter( 'single_template', array( $plugin_public, 'filter_single_template' ) );
+		// add_filter( 'single_template', array( $plugin_public, 'filter_single_template' ) );
 
 		// We may want to apply some GET params to the query on the DVT archive.
 		// @TODO: Enable this when making live.
