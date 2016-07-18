@@ -21,7 +21,7 @@
 function cchelp_output_guidebook_grid( $selected_topics = array() ) {
 
 	$tax_name = cchelp_get_topic_tax_name();
-	$topics = get_terms( $tax_name, array(
+	$topics = get_terms( array(
 	    'taxonomy' => $tax_name,
 	    'hide_empty' => false
 	) );
@@ -48,9 +48,15 @@ function cchelp_output_guidebook_grid( $selected_topics = array() ) {
 			}
 			$selected = in_array( $term->slug, $selected_topics ) ? ' selected' : '';
 
+			if ( 'webinars' == $term->slug ) {
+				$topic_url = '/archived-webinars/' ;
+			} else {
+				$topic_url = $archive_base_link . '?' . cchelp_get_friendly_url_arg( $term->taxonomy ) . '=' . $term->slug;
+			}
+
 		?>
 		<div class="Grid-cell guidebook-block<?php echo $selected . $filtered; ?>">
-			<a href="<?php echo $archive_base_link . '?' . cchelp_get_friendly_url_arg( $term->taxonomy ) . '=' . $term->slug; ?>" class="inset-contents aligncenter Grid Grid--center Grid-justifyContent"<?php echo $style_statement; ?>>
+			<a href="<?php echo $topic_url; ?>" class="inset-contents aligncenter Grid Grid--center Grid-justifyContent"<?php echo $style_statement; ?>>
 				<span class="guidebook-title Grid-cell"><?php echo $term->name; ?></span>
 			</a>
 		</div>
