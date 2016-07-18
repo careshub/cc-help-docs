@@ -22,9 +22,14 @@ if ( isset( $wp_query->query_vars['term'] ) ) {
 $topic_arg = cchelp_get_friendly_url_arg( cchelp_get_topic_tax_name() );
 $selected_topics = array();
 $selected_topics_statement = '';
-if ( isset( $_REQUEST[$topic_arg] ) ) {
-	$selected_topics = explode( ',', $_REQUEST[$topic_arg] );
-	$selected_topics_statement = ucwords( implode( ', ', $selected_topics ) );
+if ( isset( $_REQUEST[$topic_arg] ) && $selected_topics = explode( ',', $_REQUEST[$topic_arg] ) ) {
+	$found_topics = array();
+	foreach ( $selected_topics as $maybe_topic ) {
+		if ( $found_term = get_term_by( 'slug', $maybe_topic, cchelp_get_topic_tax_name() ) ) {
+			$found_topics[] = $found_term->name;
+		}
+	}
+	$selected_topics_statement = ucwords( implode( ', ', $found_topics ) );
 }
 // echo '<pre>';
 // echo 'requested tax term: '; var_dump( $tax_term );
